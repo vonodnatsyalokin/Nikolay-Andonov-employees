@@ -12,9 +12,9 @@ use InvalidArgumentException;
  */
 final class DateRange
 {
-    private readonly DateTimeImmutable $from;
+    public readonly DateTimeImmutable $from;
 
-    private readonly DateTimeImmutable $to;
+    public readonly DateTimeImmutable $to;
 
     public function __construct(DateTimeImmutable $from, DateTimeImmutable $to)
     {
@@ -31,16 +31,6 @@ final class DateRange
 
         $this->from = $from;
         $this->to = $to;
-    }
-
-    public function from(): DateTimeImmutable
-    {
-        return $this->from;
-    }
-
-    public function to(): DateTimeImmutable
-    {
-        return $this->to;
     }
 
     /**

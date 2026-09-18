@@ -95,8 +95,8 @@ final class DateRangeTest extends TestCase
         );
 
         self::assertSame(10, $morning->days());
-        self::assertSame('2020-01-01 00:00:00', $morning->from()->format('Y-m-d H:i:s'));
-        self::assertSame('2020-01-10 00:00:00', $morning->to()->format('Y-m-d H:i:s'));
+        self::assertSame('2020-01-01 00:00:00', $morning->from->format('Y-m-d H:i:s'));
+        self::assertSame('2020-01-10 00:00:00', $morning->to->format('Y-m-d H:i:s'));
     }
 
     public function testHandlesLeapDaysAndDaylightSavingShifts(): void
