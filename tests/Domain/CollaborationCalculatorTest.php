@@ -101,7 +101,7 @@ final class CollaborationCalculatorTest extends TestCase
         self::assertSame([], $result);
     }
 
-    public function testIgnoresTheSameProjectAtDifferentTimesAndDifferentProjectsAtTheSameTime(): void
+    public function testIgnoresDifferentProjectsAtTheSameTime(): void
     {
         $result = $this->calculate([
             // Same period, but different projects.
