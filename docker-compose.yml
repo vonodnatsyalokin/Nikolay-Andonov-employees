@@ -1,0 +1,6 @@
+services:
+  app:
+    build: .
+    # Override with APP_PORT when 8008 is already taken, e.g. APP_PORT=9000 docker compose up
+    ports:
+      - "${APP_PORT:-8008}:8080"
