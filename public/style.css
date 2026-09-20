@@ -65,7 +65,63 @@ form {
     border-radius: 8px;
 }
 
+/* The native file input is replaced by the label around it. */
+.file {
+    position: relative;
+    display: flex;
+    flex: 1 1 18rem;
+    align-items: center;
+    gap: .75rem;
+    padding: .35rem .35rem .35rem .4rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.file input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file:hover {
+    border-color: var(--accent);
+}
+
+.file:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.file-button {
+    flex: none;
+    padding: .4rem .85rem;
+    background: var(--background);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    font-size: .9rem;
+    white-space: nowrap;
+}
+
+.file-name {
+    overflow: hidden;
+    color: var(--muted);
+    font-size: .9rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-name-chosen {
+    color: var(--text);
+    font-weight: 600;
+}
+
 button {
+    flex: none;
     padding: .55rem 1.1rem;
     background: var(--accent);
     color: #fff;
@@ -77,6 +133,11 @@ button {
 
 button:hover {
     filter: brightness(1.08);
+}
+
+button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 table {
