@@ -18,7 +18,7 @@
         <label class="file">
             <input type="file" name="csv" accept=".csv,.txt" required>
             <span class="file-button">Choose a file</span>
-            <span class="file-name" data-placeholder="CSV or TXT, up to 5 MB">CSV or TXT, up to 5 MB</span>
+            <span class="file-name" data-placeholder="CSV or TXT, max 5 MB">CSV or TXT, max 5 MB</span>
         </label>
         <button type="submit">Find the pair</button>
     </form>
@@ -53,6 +53,7 @@
                 &mdash; <?= $this->e($page->longest[0]->totalDays) ?> days
             </h2>
 
+            <div class="table-scroll">
             <table>
                 <thead>
                 <tr>
@@ -75,6 +76,7 @@
                 <?php endforeach; ?>
                 </tbody>
             </table>
+            </div>
         <?php endif; ?>
 
         <?php if ($page->result->skippedRows !== []) : ?>
