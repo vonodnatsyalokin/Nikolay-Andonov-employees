@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests;
 
+use Composer\Autoload\ClassLoader;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -15,6 +16,10 @@ final class SmokeTest extends TestCase
     public function testSourceDirectoryIsAutoloaded(): void
     {
         $autoloader = require __DIR__ . '/../vendor/autoload.php';
+
+        if (!$autoloader instanceof ClassLoader) {
+            self::fail('Composer did not return its autoloader.');
+        }
 
         $prefixes = $autoloader->getPrefixesPsr4();
 

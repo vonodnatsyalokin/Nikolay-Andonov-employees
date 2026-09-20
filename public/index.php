@@ -22,11 +22,33 @@ $error = null;
 $fileName = null;
 $result = null;
 
+/**
+ * One entry of $_FILES, with the keys PHP itself puts there.
+ *
+ * @return array<string, mixed>|null
+ */
+function uploadedFile(mixed $entry): ?array
+{
+    if (!is_array($entry)) {
+        return null;
+    }
+
+    $file = [];
+
+    foreach ($entry as $key => $value) {
+        if (is_string($key)) {
+            $file[$key] = $value;
+        }
+    }
+
+    return $file;
+}
+
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
-    $upload = $_FILES['csv'] ?? null;
+    $upload = uploadedFile($_FILES['csv'] ?? null);
 
     try {
-        $path = (new UploadedCsvFile())->path(is_array($upload) ? $upload : null);
+        $path = (new UploadedCsvFile())->path($upload);
         $fileName = is_string($upload['name'] ?? null) ? $upload['name'] : 'the uploaded file';
         $result = FindLongestPair::create()->inFile($path);
     } catch (UploadException | UnreadableFileException $exception) {
