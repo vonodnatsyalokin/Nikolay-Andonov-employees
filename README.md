@@ -73,7 +73,7 @@ composer stan   # PHPStan, level max
 - The same employee can appear on a project more than once; the stints are treated separately and their days added up.
 - A row that cannot be read is skipped and reported with its line number, so one bad line does not cost the whole file. A file that cannot be read at all is an error.
 - The header line is optional and detected automatically. `,`, `;`, tab and `|` all work as separators.
-- Many date formats are supported, and a file may mix them.
+- Many date formats are supported, and a file may mix them. A value none of them matches is passed to `strtotime` as a last resort, which is lenient: `yesterday` is a date to it, and `2020-02-30` becomes 1 March. Guessing is preferred over losing the row.
 - Ambiguous values such as `01/02/2020` are read the way the rest of the file is written: the dates of the whole file are looked at first, and `13/05/2020` anywhere in it makes the file day first, `05/13/2020` makes it month first. A file that gives nothing away is read day first.
 
 ## Notes
