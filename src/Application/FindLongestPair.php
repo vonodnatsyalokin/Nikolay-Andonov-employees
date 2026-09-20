@@ -7,11 +7,13 @@ namespace App\Application;
 use App\Domain\CollaborationCalculator;
 use App\Domain\EmploymentRecord;
 use App\Input\CsvReader;
+use App\Input\DetectingDateParser;
 use App\Input\InvalidRowException;
 use App\Input\PriorityFormatDateParser;
 use App\Input\RowParser;
 use App\Input\UnreadableFileException;
 use DateTimeImmutable;
+use Generator;
 
 /**
  * The use case itself: read a CSV file and work out which pair of employees
@@ -46,6 +48,12 @@ final readonly class FindLongestPair
      */
     public function inFile(string $path): AnalysisResult
     {
+        // A first pass over the dates, so an ambiguous value like 01/02/2020 is
+        // read the way the rest of the file is written.
+        $rowParser = $this->rowParser->withDateParser(
+            DetectingDateParser::forValues($this->datesIn($path)),
+        );
+
         /** @var list<EmploymentRecord> $records */
         $records = [];
 
@@ -58,12 +66,25 @@ final readonly class FindLongestPair
             $rowsRead++;
 
             try {
-                $records[] = $this->rowParser->parse($values);
+                $records[] = $rowParser->parse($values);
             } catch (InvalidRowException $exception) {
                 $skipped[] = new SkippedRow($lineNumber, $exception->getMessage());
             }
         }
 
         return new AnalysisResult($this->calculator->calculate($records), $skipped, $rowsRead);
+    }
+
+    /**
+     * Every value in the two date columns, whether or not it is a date.
+     *
+     * @return Generator<int, string>
+     */
+    private function datesIn(string $path): Generator
+    {
+        foreach ($this->reader->read($path) as $values) {
+            yield $values[2] ?? '';
+            yield $values[3] ?? '';
+        }
     }
 }

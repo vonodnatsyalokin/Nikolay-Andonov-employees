@@ -74,6 +74,35 @@ final class FindLongestPairTest extends TestCase
         self::assertSame(10, $longest[1]->totalDays);
     }
 
+    public function testReadsAmbiguousDatesTheWayTheRestOfTheFileIsWritten(): void
+    {
+        // 13 cannot be a month, so this file is day first: 1 February to 13 May.
+        $dayFirst = $this->file(
+            "143,12,01/02/2020,13/05/2020\n" .
+            "412,12,01/02/2020,13/05/2020\n"
+        );
+
+        // The same file written the American way: 2 January to 13 May.
+        $monthFirst = $this->file(
+            "143,12,01/02/2020,05/13/2020\n" .
+            "412,12,01/02/2020,05/13/2020\n"
+        );
+
+        self::assertSame(103, $this->service()->inFile($dayFirst)->longest()[0]->totalDays);
+        self::assertSame(133, $this->service()->inFile($monthFirst)->longest()[0]->totalDays);
+    }
+
+    public function testDoesNotSkipRowsItCouldHaveUnderstood(): void
+    {
+        // Without looking at the whole file first, 05/13/2020 would be unreadable.
+        $path = $this->file(
+            "143,12,01/02/2020,05/13/2020\n" .
+            "412,12,01/02/2020,05/13/2020\n"
+        );
+
+        self::assertSame([], $this->service()->inFile($path)->skippedRows);
+    }
+
     public function testFindsNoPairWhenNobodyEverOverlaps(): void
     {
         $path = $this->file(

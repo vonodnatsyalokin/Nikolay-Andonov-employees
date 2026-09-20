@@ -31,6 +31,15 @@ final class RowParser
     }
 
     /**
+     * The same parser, reading dates with a different parser. Used once the
+     * date formats of a file are known.
+     */
+    public function withDateParser(IDateParser $dateParser): self
+    {
+        return new self($dateParser, $this->today);
+    }
+
+    /**
      * @param list<string> $values
      *
      * @throws InvalidRowException
