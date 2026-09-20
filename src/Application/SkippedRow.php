@@ -11,7 +11,7 @@ final readonly class SkippedRow
 {
     public function __construct(
         public int $lineNumber,
-        public string $reason,
+        public string $reason, // An Enum might be a better fit here
     ) {
     }
 }

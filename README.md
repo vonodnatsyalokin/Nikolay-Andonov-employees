@@ -4,6 +4,12 @@ Finds the pair of employees who have worked together on common projects for the 
 
 Input is a CSV file with the format `EmpID, ProjectID, DateFrom, DateTo`, where `DateTo` may be `NULL`, meaning the employee is still on the project.
 
+## How it works
+
+The command line and the browser are two ways into the same pipeline. Click the chart to open [`docs/flow.html`](docs/flow.html?raw=1).
+
+[![How it works](docs/flow.png)](docs/flow.html?raw=1)
+
 ## Requirements
 
 - PHP 8.2+

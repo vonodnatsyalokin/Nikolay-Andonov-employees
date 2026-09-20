@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>How it works</title>
+    <style>
+        :root {
+            --text: #1d2433;
+            --muted: #5b6577;
+            --line: #dfe3ea;
+            --surface: #ffffff;
+            --background: #f4f6f9;
+            --accent: #1d5cc4;
+            --accent-soft: #eaf1fd;
+            --warning-soft: #fff8e6;
+            --warning-line: #e8c56a;
+        }
+
+        body {
+            margin: 0;
+            padding: 2.5rem 1.25rem;
+            background: var(--background);
+            color: var(--text);
+            font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+
+        main {
+            max-width: 64rem;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+        }
+
+        h1 {
+            margin: 0 0 .35rem;
+            font-size: 1.5rem;
+        }
+
+        p.lead {
+            margin: 0 0 1.75rem;
+            color: var(--muted);
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+        }
+
+        .box {
+            fill: var(--surface);
+            stroke: var(--line);
+        }
+
+        .box-accent {
+            fill: var(--accent-soft);
+            stroke: var(--accent);
+        }
+
+        .box-warning {
+            fill: var(--warning-soft);
+            stroke: var(--warning-line);
+        }
+
+        .title {
+            font: 600 15px system-ui, sans-serif;
+            fill: var(--text);
+        }
+
+        .detail {
+            font: 13px system-ui, sans-serif;
+            fill: var(--muted);
+        }
+
+        .label {
+            font: italic 12px system-ui, sans-serif;
+            fill: var(--muted);
+        }
+
+        .flow {
+            stroke: var(--accent);
+            stroke-width: 1.6;
+            fill: none;
+        }
+
+        .flow-soft {
+            stroke: var(--warning-line);
+            stroke-width: 1.6;
+            fill: none;
+            stroke-dasharray: 5 4;
+        }
+    </style>
+</head>
+<body>
+<main>
+    <h1>How it works</h1>
+    <p class="lead">
+        The command line and the browser are two ways into the same pipeline. Everything below
+        <code>FindLongestPair</code> is shared, and knows nothing about where the request came from.
+    </p>
+
+    <svg viewBox="0 0 980 1000" role="img" aria-label="Flow chart of the application">
+        <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7"
+                    orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#1d5cc4"/>
+            </marker>
+            <marker id="arrow-soft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7"
+                    orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#e8c56a"/>
+            </marker>
+        </defs>
+
+        <!-- Entry points -->
+        <rect class="box-accent" x="40" y="24" width="380" height="64" rx="8"/>
+        <text class="title" x="60" y="52">Command line</text>
+        <text class="detail" x="60" y="72">php bin/employees.php data/sample.csv</text>
+
+        <rect class="box-accent" x="560" y="24" width="380" height="64" rx="8"/>
+        <text class="title" x="580" y="52">Browser</text>
+        <text class="detail" x="580" y="72">upload a file on public/index.php</text>
+
+        <path class="flow" d="M 230 88 L 230 128" marker-end="url(#arrow)"/>
+        <path class="flow" d="M 750 88 L 750 128" marker-end="url(#arrow)"/>
+
+        <!-- Adapters -->
+        <rect class="box" x="40" y="128" width="380" height="90" rx="8"/>
+        <text class="title" x="60" y="156">EmployeesCommand</text>
+        <text class="detail" x="60" y="178">reads the path from the arguments</text>
+        <text class="detail" x="60" y="198">no path or no such file, exit code 1</text>
+
+        <rect class="box" x="560" y="128" width="380" height="90" rx="8"/>
+        <text class="title" x="580" y="156">AnalyseUploadController</text>
+        <text class="detail" x="580" y="178">UploadedCsvFile checks the upload:</text>
+        <text class="detail" x="580" y="198">real upload, .csv or .txt, 5 MB, text</text>
+
+        <!-- Converge -->
+        <path class="flow" d="M 230 218 L 230 252 Q 230 268 250 268 L 380 268" marker-end="url(#arrow)"/>
+        <path class="flow" d="M 750 218 L 750 252 Q 750 268 730 268 L 600 268" marker-end="url(#arrow)"/>
+
+        <rect class="box-accent" x="250" y="246" width="480" height="76" rx="8"/>
+        <text class="title" x="490" y="276" text-anchor="middle">FindLongestPair::inFile($path)</text>
+        <text class="detail" x="490" y="298" text-anchor="middle">the use case, same for both entry points</text>
+
+        <path class="flow" d="M 490 322 L 490 356" marker-end="url(#arrow)"/>
+
+        <!-- Pass 1 -->
+        <rect class="box" x="250" y="356" width="480" height="96" rx="8"/>
+        <text class="label" x="270" y="380">first pass</text>
+        <text class="title" x="270" y="404">CsvReader &rarr; DetectingDateParser</text>
+        <text class="detail" x="270" y="426">every date in the file scores the formats,</text>
+        <text class="detail" x="270" y="444">so 01/02/2020 is read the way the file is written</text>
+
+        <path class="flow" d="M 490 452 L 490 486" marker-end="url(#arrow)"/>
+
+        <!-- Pass 2 -->
+        <rect class="box" x="250" y="486" width="480" height="96" rx="8"/>
+        <text class="label" x="270" y="510">second pass</text>
+        <text class="title" x="270" y="534">CsvReader &rarr; RowParser</text>
+        <text class="detail" x="270" y="556">one EmploymentRecord per row: ids and a DateRange</text>
+        <text class="detail" x="270" y="574">an empty DateTo means the stint runs until today</text>
+
+        <!-- Skipped rows -->
+        <path class="flow-soft" d="M 730 534 L 790 534" marker-end="url(#arrow-soft)"/>
+        <rect class="box-warning" x="790" y="500" width="170" height="68" rx="8"/>
+        <text class="title" x="808" y="526">SkippedRow</text>
+        <text class="detail" x="808" y="548">bad line, kept</text>
+        <text class="detail" x="808" y="564">with the reason</text>
+
+        <path class="flow" d="M 490 582 L 490 616" marker-end="url(#arrow)"/>
+
+        <!-- Calculator -->
+        <rect class="box" x="250" y="616" width="480" height="114" rx="8"/>
+        <text class="title" x="270" y="644">CollaborationCalculator</text>
+        <text class="detail" x="270" y="666">group the records by project</text>
+        <text class="detail" x="270" y="686">every pair inside a project: DateRange overlap in days</text>
+        <text class="detail" x="270" y="706">add the days up per pair, longest first</text>
+
+        <path class="flow" d="M 490 730 L 490 764" marker-end="url(#arrow)"/>
+
+        <!-- Result -->
+        <rect class="box-accent" x="250" y="764" width="480" height="96" rx="8"/>
+        <text class="title" x="490" y="792" text-anchor="middle">AnalysisResult</text>
+        <text class="detail" x="490" y="814" text-anchor="middle">every pair, the longest ones (all of them when tied),</text>
+        <text class="detail" x="490" y="834" text-anchor="middle">the skipped rows and how many rows were read</text>
+
+        <path class="flow" d="M 380 860 L 250 860 Q 230 860 230 880 L 230 906" marker-end="url(#arrow)"/>
+        <path class="flow" d="M 600 860 L 730 860 Q 750 860 750 880 L 750 906" marker-end="url(#arrow)"/>
+
+        <!-- Output -->
+        <rect class="box" x="40" y="906" width="380" height="76" rx="8"/>
+        <text class="title" x="60" y="934">Table in the terminal</text>
+        <text class="detail" x="60" y="956">the pair, their projects, the skipped rows</text>
+
+        <rect class="box" x="560" y="906" width="380" height="76" rx="8"/>
+        <text class="title" x="580" y="934">Datagrid in the browser</text>
+        <text class="detail" x="580" y="956">PageModel rendered by index.phtml</text>
+    </svg>
+</main>
+</body>
+</html>
