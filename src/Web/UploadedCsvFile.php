@@ -1,0 +1,78 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Web;
+
+use Closure;
+
+/**
+ * Checks what the browser sent before anything is read from disk.
+ */
+final class UploadedCsvFile
+{
+    private const ALLOWED_EXTENSIONS = ['csv', 'txt'];
+
+    private const ERRORS = [
+        UPLOAD_ERR_INI_SIZE => 'The file is larger than this server allows.',
+        UPLOAD_ERR_FORM_SIZE => 'The file is larger than the form allows.',
+        UPLOAD_ERR_PARTIAL => 'The file was only partially uploaded, please try again.',
+        UPLOAD_ERR_NO_FILE => 'Please choose a CSV file first.',
+        UPLOAD_ERR_NO_TMP_DIR => 'The server has no temporary folder to store the upload in.',
+        UPLOAD_ERR_CANT_WRITE => 'The server could not write the uploaded file to disk.',
+        UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the upload.',
+    ];
+
+    private readonly Closure $isUploadedFile;
+
+    /**
+     * @param (callable(string): bool)|null $isUploadedFile injectable so the check can be tested
+     */
+    public function __construct(?callable $isUploadedFile = null)
+    {
+        $this->isUploadedFile = Closure::fromCallable($isUploadedFile ?? 'is_uploaded_file');
+    }
+
+    /**
+     * @param array<string, mixed>|null $file one entry of $_FILES
+     *
+     * @return string path of the uploaded file on this server
+     *
+     * @throws UploadException
+     */
+    public function path(?array $file = null): string
+    {
+        if ($file === null) {
+            throw new UploadException(self::ERRORS[UPLOAD_ERR_NO_FILE]);
+        }
+
+        $error = is_int($file['error'] ?? null) ? $file['error'] : UPLOAD_ERR_NO_FILE;
+
+        if ($error !== UPLOAD_ERR_OK) {
+            throw new UploadException(self::ERRORS[$error] ?? 'The upload failed.');
+        }
+
+        $path = is_string($file['tmp_name'] ?? null) ? $file['tmp_name'] : '';
+
+        // Guards against a request that points at a file on the server instead of an upload.
+        if ($path === '' || !($this->isUploadedFile)($path)) {
+            throw new UploadException('The upload could not be read.');
+        }
+
+        $this->guardExtension(is_string($file['name'] ?? null) ? $file['name'] : '');
+
+        return $path;
+    }
+
+    private function guardExtension(string $name): void
+    {
+        $extension = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+
+        if (!in_array($extension, self::ALLOWED_EXTENSIONS, true)) {
+            throw new UploadException(sprintf(
+                'Please upload a %s file.',
+                implode(' or ', array_map(static fn (string $e): string => '.' . $e, self::ALLOWED_EXTENSIONS)),
+            ));
+        }
+    }
+}
