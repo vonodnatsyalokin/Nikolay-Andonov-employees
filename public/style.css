@@ -1,0 +1,134 @@
+:root {
+    --text: #1d2433;
+    --muted: #5b6577;
+    --line: #dfe3ea;
+    --surface: #ffffff;
+    --background: #f4f6f9;
+    --accent: #1d5cc4;
+    --warning-background: #fff8e6;
+    --warning-line: #e8c56a;
+    --error-background: #fdeced;
+    --error-line: #d9534f;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 2.5rem 1.25rem;
+    background: var(--background);
+    color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+main {
+    max-width: 52rem;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+
+h1 {
+    margin: 0 0 .5rem;
+    font-size: 1.6rem;
+}
+
+h2 {
+    margin: 2rem 0 1rem;
+    font-size: 1.2rem;
+}
+
+.lead {
+    margin: 0 0 1.5rem;
+    color: var(--muted);
+}
+
+code {
+    padding: .1rem .35rem;
+    background: var(--background);
+    border-radius: 4px;
+    font-size: .9em;
+}
+
+form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    align-items: center;
+    padding: 1.25rem;
+    background: var(--background);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+button {
+    padding: .55rem 1.1rem;
+    background: var(--accent);
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    font: inherit;
+    cursor: pointer;
+}
+
+button:hover {
+    filter: brightness(1.08);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: .6rem .75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+}
+
+th {
+    font-size: .8rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+tbody tr:hover {
+    background: var(--background);
+}
+
+.error,
+.warning,
+.empty {
+    margin-top: 1.5rem;
+    padding: .85rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--background);
+}
+
+.error {
+    background: var(--error-background);
+    border-color: var(--error-line);
+}
+
+.warning {
+    background: var(--warning-background);
+    border-color: var(--warning-line);
+}
+
+.warning p {
+    margin: 0 0 .5rem;
+    font-weight: 600;
+}
+
+.warning ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: var(--muted);
+}

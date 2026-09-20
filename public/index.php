@@ -67,14 +67,16 @@ $longest = $result instanceof AnalysisResult ? $result->longest() : [];
                 No pair of employees in <?= e((string) $fileName) ?> has worked together on a common project.
             </p>
         <?php } else { ?>
+            <?php
+                $pairNames = array_map(
+                    static fn ($collaboration): string => $collaboration->pair->firstEmployeeId
+                        . ' & ' . $collaboration->pair->secondEmployeeId,
+                    $longest,
+                );
+            ?>
             <h2>
                 <?= count($longest) > 1 ? 'Longest working pairs' : 'Longest working pair' ?>:
-                <?php foreach ($longest as $index => $collaboration) { ?>
-                    <?= $index > 0 ? ' and ' : '' ?>
-                    <?= e($collaboration->pair->firstEmployeeId) ?>
-                    &amp; <?= e($collaboration->pair->secondEmployeeId) ?>
-                <?php } ?>
-                &mdash; <?= e($longest[0]->totalDays) ?> days
+                <?= e(implode(', ', $pairNames)) ?> &mdash; <?= e($longest[0]->totalDays) ?> days
             </h2>
 
             <table>
