@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class PageTest extends TestCase
 {
-    private const PAGE = __DIR__ . '/../../public/index.php';
+    private const PAGE = __DIR__ . '/../../src/Web/templates/index.phtml';
 
     private const STYLESHEET = __DIR__ . '/../../public/style.css';
 

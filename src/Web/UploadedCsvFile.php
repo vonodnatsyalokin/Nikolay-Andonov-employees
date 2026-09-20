@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Web;
 
 use Closure;
+use finfo;
 
 /**
  * Checks what the browser sent before anything is read from disk.
@@ -12,6 +13,23 @@ use Closure;
 final class UploadedCsvFile
 {
     private const ALLOWED_EXTENSIONS = ['csv', 'txt'];
+
+    /**
+     * A limit of our own, so it does not silently change with php.ini.
+     */
+    private const MAX_BYTES = 5 * 1024 * 1024;
+
+    /**
+     * A CSV file is plain text. Anything a browser would call a document,
+     * an image or an archive is not one, whatever the file is named.
+     */
+    private const ALLOWED_MIME_TYPES = [
+        'text/plain',
+        'text/csv',
+        'application/csv',
+        'inode/x-empty',
+        'application/x-empty', // an empty file, named differently by different systems
+    ];
 
     private const ERRORS = [
         UPLOAD_ERR_INI_SIZE => 'The file is larger than this server allows.',
@@ -60,8 +78,34 @@ final class UploadedCsvFile
         }
 
         $this->guardExtension(is_string($file['name'] ?? null) ? $file['name'] : '');
+        $this->guardSize($path);
+        $this->guardContents($path);
 
         return $path;
+    }
+
+    private function guardSize(string $path): void
+    {
+        if ((int) filesize($path) > self::MAX_BYTES) {
+            throw new UploadException(sprintf(
+                'The file is larger than %d MB.',
+                intdiv(self::MAX_BYTES, 1024 * 1024),
+            ));
+        }
+    }
+
+    /**
+     * The name says .csv, but only the contents can say whether it is text.
+     * Most CSV files are reported as text/plain, so this rules out binaries
+     * rather than proving the file is a CSV.
+     */
+    private function guardContents(string $path): void
+    {
+        $mimeType = (new finfo(FILEINFO_MIME_TYPE))->file($path);
+
+        if (!in_array($mimeType, self::ALLOWED_MIME_TYPES, true)) {
+            throw new UploadException('That does not look like a text file.');
+        }
     }
 
     private function guardExtension(string $name): void

@@ -12,7 +12,7 @@ use Generator;
  * Takes care of the things real files do: a byte order mark, a header line,
  * empty lines, padded values and a delimiter that is not always a comma.
  */
-final class CsvReader
+final class CsvReader implements ICsvReader
 {
     private const DELIMITERS = [',', ';', "\t", '|'];
 

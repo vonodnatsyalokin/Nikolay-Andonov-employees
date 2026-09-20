@@ -7,6 +7,7 @@ namespace App\Application;
 use App\Domain\CollaborationCalculator;
 use App\Domain\EmploymentRecord;
 use App\Input\CsvReader;
+use App\Input\ICsvReader;
 use App\Input\DetectingDateParser;
 use App\Input\InvalidRowException;
 use App\Input\PriorityFormatDateParser;
@@ -25,7 +26,7 @@ use Generator;
 final readonly class FindLongestPair
 {
     public function __construct(
-        private CsvReader $reader,
+        private ICsvReader $reader,
         private RowParser $rowParser,
         private CollaborationCalculator $calculator,
     ) {

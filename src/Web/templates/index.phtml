@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employees who worked together</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+    <h1>Employees who worked together</h1>
+    <p class="lead">
+        Upload a CSV file with <code>EmpID, ProjectID, DateFrom, DateTo</code> to see which pair of
+        employees has worked together on common projects for the longest time.
+    </p>
+
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="csv" accept=".csv,.txt" required>
+        <button type="submit">Find the pair</button>
+    </form>
+
+    <?php if ($page->error !== null) : ?>
+        <p class="error"><?= $this->e($page->error) ?></p>
+    <?php endif; ?>
+
+    <?php if ($page->hasResult()) : ?>
+        <?php if ($page->longest === []) : ?>
+            <p class="empty">
+                No pair of employees in <?= $this->e((string) $page->fileName) ?> has worked together
+                on a common project.
+            </p>
+        <?php else : ?>
+            <h2>
+                <?= count($page->longest) > 1 ? 'Longest working pairs' : 'Longest working pair' ?>:
+                <?php foreach ($page->longest as $index => $collaboration) : ?>
+                    <?= $index > 0 ? ', ' : '' ?><?= $this->e($collaboration->pair->firstEmployeeId) ?>
+                    &amp; <?= $this->e($collaboration->pair->secondEmployeeId) ?>
+                <?php endforeach; ?>
+                &mdash; <?= $this->e($page->longest[0]->totalDays) ?> days
+            </h2>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Employee ID #1</th>
+                    <th>Employee ID #2</th>
+                    <th>Project ID</th>
+                    <th>Days worked</th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($page->longest as $collaboration) : ?>
+                    <?php foreach ($collaboration->projects as $project) : ?>
+                        <tr>
+                            <td><?= $this->e($collaboration->pair->firstEmployeeId) ?></td>
+                            <td><?= $this->e($collaboration->pair->secondEmployeeId) ?></td>
+                            <td><?= $this->e($project->projectId) ?></td>
+                            <td><?= $this->e($project->days) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php endif; ?>
+
+        <?php if ($page->result->skippedRows !== []) : ?>
+            <div class="warning">
+                <p>
+                    <?= $this->e(count($page->result->skippedRows)) ?>
+                    of <?= $this->e($page->result->rowsRead) ?> rows were skipped:
+                </p>
+                <ul>
+                    <?php foreach ($page->result->skippedRows as $row) : ?>
+                        <li>Line <?= $this->e($row->lineNumber) ?>: <?= $this->e($row->reason) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
+</main>
+</body>
+</html>
